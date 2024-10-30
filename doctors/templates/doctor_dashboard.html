@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1>Doctor Dashboard</h1>
+        <a href="{% url 'create_prescription' %}" class="btn btn-success">Create Prescription</a><br><br>
+        <a href="{% url 'add_patient' %}" class="btn btn-primary mb-3">Add </a>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Medical History</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in page_obj %}
+                    <tr>
+                        <td>{{ patient.name }}</td>
+                        <td>{{ patient.age }}</td>
+                        <td>{{ patient.medical_history }}</td>
+                        <td>
+                            <a href="{% url 'edit_patient' patient.pk %}" class="btn btn-warning">Edit</a>
+                            <a href="{% url 'delete_patient' patient.pk %}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">No patients available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+
+                {% for page_num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_num == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <br>
+    <div class="container">
+        <h1>Appointments</h1>
+        <a href="{% url 'add_appointment' %}" class="btn btn-success mb-2">Add Appointment</a>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.patient_name }}</td>
+                    <td>{{ appointment.appointment_date }}</td>
+                    <td>{{ appointment.appointment_time }}</td>
+                    <td>{{ appointment.description }}</td>
+                    <td>
+                        <a href="{% url 'edit_appointment' appointment.id %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'delete_appointment' appointment.id %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
